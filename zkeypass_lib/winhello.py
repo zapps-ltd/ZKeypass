@@ -125,6 +125,81 @@ def forget_all():
         _save(data)
 
 
+def _older_stores():
+    """quick_unlock.json of older ZKPass or ZKeypass folders beside this one.
+
+    A new build is usually unpacked next to the old one (for example
+    portables\\ZKPass and portables\\ZKeypass).  The old data folder is data
+    beside the old program or, in the oldest builds, ZKPass\\data inside it.
+    """
+    own = os.path.normcase(os.path.abspath(STORE_FILE))
+    parent = os.path.dirname(os.path.abspath(paths.ROOT_DIR))
+    found = []
+    try:
+        names = sorted(os.listdir(parent))
+    except OSError:
+        return found
+    for name in names:
+        if not name.lower().startswith(("zkpass", "zkeypass")):
+            continue
+        for sub in ("data", os.path.join("ZKPass", "data"),
+                    os.path.join("ZKeypass", "data")):
+            store = os.path.join(parent, name, sub, "quick_unlock.json")
+            if (os.path.normcase(os.path.abspath(store)) != own
+                    and os.path.isfile(store)):
+                found.append(store)
+    return found
+
+
+def _same_file(first, second):
+    import hashlib
+
+    try:
+        if os.path.getsize(first) != os.path.getsize(second):
+            return False
+        digests = []
+        for name in (first, second):
+            with open(name, "rb") as handle:
+                digests.append(hashlib.sha256(handle.read()).digest())
+        return digests[0] == digests[1]
+    except OSError:
+        return False
+
+
+def adopt_older(path):
+    """Take over the Windows Hello record an older build made for this file.
+
+    When a database was copied out of an older ZKPass or ZKeypass folder,
+    that folder's record still opens it: the Windows Hello key is the same
+    one (CREDENTIAL_NAME has not changed).  A record is taken only for a
+    file with the same name and exactly the same content as the database it
+    was made for, and it keeps the place it was sealed for, which unlock()
+    needs.  Returns True when a record was taken over.
+    """
+    if is_set_up(path):
+        return False
+    target = _key(path)
+    for store in _older_stores():
+        try:
+            with open(store, "r", encoding="utf-8") as handle:
+                records = json.load(handle).get("databases") or {}
+        except (OSError, ValueError, AttributeError):
+            continue
+        for old_key, record in records.items():
+            if (not isinstance(record, dict) or old_key == target
+                    or os.path.basename(old_key) != os.path.basename(target)
+                    or not _same_file(old_key, path)):
+                continue
+            taken = dict(record)
+            taken.setdefault("sealed_for", old_key)
+            with _lock:
+                data = _load()
+                data["databases"][target] = taken
+                _save(data)
+            return True
+    return False
+
+
 # ------------------------------------------------------- Windows Runtime
 
 def _winrt():
@@ -392,8 +467,11 @@ def unlock(path):
             "can be set up again."))
     key = _aes_key(_sign(credential, statuses, challenge), challenge)
     try:
-        secret = AESGCM(key).decrypt(nonce, sealed,
-                                     _key(path).encode("utf-8"))
+        # A record taken over from an older folder is opened with the place
+        # it was sealed for (adopt_older).
+        secret = AESGCM(key).decrypt(
+            nonce, sealed,
+            (record.get("sealed_for") or _key(path)).encode("utf-8"))
         values = json.loads(secret.decode("utf-8"))
     except Exception:
         forget(path)

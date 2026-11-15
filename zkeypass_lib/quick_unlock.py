@@ -83,6 +83,13 @@ def try_open(parent, path):
     plain Cancel.
     """
     if not winhello.is_set_up(path):
+        # A copy of a database from an older ZKPass folder brings its Windows
+        # Hello record along; any trouble there just means the password.
+        try:
+            winhello.adopt_older(path)
+        except Exception:
+            pass
+    if not winhello.is_set_up(path):
         return None
     from .kdbx_vault import open_any
     from .vault import PasswordPair
