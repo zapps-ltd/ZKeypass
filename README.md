@@ -183,7 +183,7 @@ ZKeypass is free software, licensed under the GNU Affero General Public License,
 
 ## Third-party software and credits
 
-ZKeypass is built on the work of others. In short:
+ZKeypass is built using:
 - wxPython and wxWidgets (wxWindows Library Licence 3.1): the interface.
 - cryptography (Apache-2.0 or BSD-3-Clause) with OpenSSL (Apache-2.0): encryption.
 - cffi (MIT-0), pycparser (BSD-3-Clause), typing_extensions (PSF-2.0), PyWinRT (MIT): support libraries.
