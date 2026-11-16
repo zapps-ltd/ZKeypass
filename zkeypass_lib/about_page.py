@@ -146,6 +146,10 @@ def show_about():
         lines = [line.strip() for line in part.strip().split("\n") if line.strip()]
         if lines:
             blocks.append(lines[0] if len(lines) == 1 else lines)
+    # Only the last part: the data stays in the data folder and ZKeypass
+    # never goes online by itself. The name line and the folder paths are
+    # not shown.
+    blocks = blocks[-1:]
     credits = [
         "wxPython - wxWindows Library Licence",
         "cryptography - Apache License 2.0 or BSD 3-Clause License",
