@@ -873,6 +873,7 @@ about_page_this_copy_heading = Bu kopya
 about_page_title = {app} hakkında
 about_page_version = Sürüm {version}
 about_page_license = {app}, GNU Affero General Public License sürüm 3 veya sonrası altında özgür bir yazılımdır. Bu yalnızca {app} kodu için geçerlidir: yukarıda listelenen her bileşen kendi lisansını korur.
+about_page_ownership = ZAPPS adı, ZAPPS Z logosu ve {app} simgesi ZAPPS SOFTWARE LTD'ye aittir. Telif hakkı 2026 ZAPPS SOFTWARE LTD, tüm hakları saklıdır. Bunlar bu yazılımın açık kaynak lisansı kapsamında değildir ve yazılı izin olmadan başka yazılımlar veya değiştirilmiş sürümler için kullanılamaz.
 
 # Messages in message boxes, and errors.
 [errors]

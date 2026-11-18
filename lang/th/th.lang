@@ -873,6 +873,7 @@ about_page_this_copy_heading = สำเนานี้
 about_page_title = เกี่ยวกับ {app}
 about_page_version = เวอร์ชัน {version}
 about_page_license = {app} เป็นซอฟต์แวร์เสรีภายใต้ GNU Affero General Public License รุ่น 3 หรือใหม่กว่า ข้อนี้ใช้กับโค้ดของ {app} เท่านั้น: แต่ละส่วนประกอบที่ระบุไว้ด้านบนยังคงใช้สัญญาอนุญาตของตนเอง
+about_page_ownership = ชื่อ ZAPPS โลโก้ ZAPPS Z และไอคอนของ {app} เป็นของ ZAPPS SOFTWARE LTD ลิขสิทธิ์ 2026 ZAPPS SOFTWARE LTD สงวนลิขสิทธิ์ทุกประการ สิ่งเหล่านี้ไม่อยู่ภายใต้สัญญาอนุญาตโอเพนซอร์สของซอฟต์แวร์นี้ และห้ามนำไปใช้กับซอฟต์แวร์อื่นหรือรุ่นที่ดัดแปลงโดยไม่ได้รับอนุญาตเป็นลายลักษณ์อักษร
 
 # Messages in message boxes, and errors.
 [errors]

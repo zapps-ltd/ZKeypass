@@ -873,6 +873,7 @@ about_page_this_copy_heading = این نسخه
 about_page_title = درباره {app}
 about_page_version = نسخه {version}
 about_page_license = {app} نرم‌افزاری آزاد تحت GNU Affero General Public License، نسخه 3 یا بالاتر است. این فقط درباره کد {app} صدق می‌کند: هر مؤلفه‌ای که در بالا آمده مجوز خود را حفظ می‌کند.
+about_page_ownership = نام ZAPPS، نشان Z مربوط به ZAPPS و نماد {app} متعلق به ZAPPS SOFTWARE LTD است. حق نشر 2026 ZAPPS SOFTWARE LTD، همه حقوق محفوظ است. این موارد زیر پوشش مجوز متن‌باز این نرم‌افزار نیستند و بدون اجازهٔ کتبی نمی‌توان از آن‌ها برای نرم‌افزارهای دیگر یا نسخه‌های تغییریافته استفاده کرد.
 
 # Messages in message boxes, and errors.
 [errors]

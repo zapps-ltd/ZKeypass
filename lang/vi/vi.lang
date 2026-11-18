@@ -873,6 +873,7 @@ about_page_this_copy_heading = Bản sao này
 about_page_title = Giới thiệu về {app}
 about_page_version = Phiên bản {version}
 about_page_license = {app} là phần mềm tự do theo GNU Affero General Public License, phiên bản 3 trở lên. Điều này chỉ áp dụng cho mã nguồn của {app}: mỗi thành phần được liệt kê ở trên vẫn giữ giấy phép riêng.
+about_page_ownership = Tên ZAPPS, logo Z của ZAPPS và biểu tượng của {app} thuộc sở hữu của ZAPPS SOFTWARE LTD. Bản quyền 2026 ZAPPS SOFTWARE LTD, bảo lưu mọi quyền. Chúng không nằm trong giấy phép nguồn mở của phần mềm này và không được dùng cho phần mềm khác hoặc các phiên bản đã chỉnh sửa nếu chưa có sự cho phép bằng văn bản.
 
 # Messages in message boxes, and errors.
 [errors]

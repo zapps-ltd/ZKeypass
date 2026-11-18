@@ -873,6 +873,7 @@ about_page_this_copy_heading = 此複本
 about_page_title = 關於 {app}
 about_page_version = 版本 {version}
 about_page_license = {app} 是依據 GNU Affero General Public License 第 3 版或更新版本發布的自由軟體。這僅適用於 {app} 的程式碼：上方列出的每個元件都保留其自己的授權。
+about_page_ownership = ZAPPS 名稱、ZAPPS Z 標誌和 {app} 圖示歸 ZAPPS SOFTWARE LTD 所有。版權所有 2026 ZAPPS SOFTWARE LTD，保留一切權利。它們不在本軟體的開放原始碼授權範圍內，未經書面許可，不得用於其他軟體或修改版本。
 
 # Messages in message boxes, and errors.
 [errors]

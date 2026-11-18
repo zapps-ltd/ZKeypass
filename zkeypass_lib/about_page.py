@@ -3,6 +3,7 @@ opened so the developers team is listed in a random order, and shown in
 the default browser. Nothing on the page loads from the internet; its
 links open only when they are clicked."""
 
+import base64
 import html
 import os
 import random
@@ -26,6 +27,9 @@ main { max-width: 46rem; margin: 0 auto; padding: 1.5rem 1.1rem 2.5rem; }
   border-radius: 18px; padding: 1.6rem 1.5rem; margin-bottom: 1.25rem; }
 .hero h1 { margin: 0 0 .35rem; font-size: 1.9rem; line-height: 1.25; }
 .hero p { margin: .15rem 0; }
+.hero { display: flow-root; }
+.hero .mark { float: right; width: 4.5rem; height: 4.5rem; margin: -.3rem -.3rem .3rem .8rem; }
+[dir="rtl"] .hero .mark { float: left; margin: -.3rem .8rem .3rem -.3rem; }
 .hero .by { font-size: 1.15rem; font-weight: 600; }
 section { background: var(--card); border: 1px solid var(--border);
   border-radius: 14px; padding: 1.1rem 1.4rem; margin: 0 0 1rem; }
@@ -56,8 +60,22 @@ def _block(item):
     return "<p>%s</p>" % html.escape(str(item))
 
 
+def mark_image(svg_path):
+    """The ZAPPS Z mark as a decorative image for the hero: empty alt text
+    and aria-hidden, so screen readers skip it. Empty when the file is
+    missing."""
+    try:
+        with open(svg_path, "rb") as handle:
+            data = base64.b64encode(handle.read()).decode("ascii")
+    except OSError:
+        return ""
+    return ('<img class="mark" src="data:image/svg+xml;base64,%s" alt=""'
+            ' aria-hidden="true" width="72" height="72">' % data)
+
+
 def build_html(app, version, sections, credits, license_line="", t=_plain,
-               rtl=False, lang_code="en", static_team=False):
+               rtl=False, lang_code="en", static_team=False, mark="",
+               ownership_line=""):
     """sections: [(heading, [paragraph or [items]])]; credits: [str]."""
     e = html.escape
     first, second = random.sample(TEAM, 2)
@@ -67,8 +85,10 @@ def build_html(app, version, sections, credits, license_line="", t=_plain,
            '<head>', '<meta charset="utf-8">',
            '<meta name="viewport" content="width=device-width, initial-scale=1">',
            '<title>%s</title>' % e(title), '<style>%s</style>' % CSS, '</head>',
-           '<body>', '<main>', '<header class="hero">',
-           '<h1>%s</h1>' % e(title),
+           '<body>', '<main>', '<header class="hero">']
+    if mark:
+        out.append(mark)
+    out += ['<h1>%s</h1>' % e(title),
            '<p class="by">%s</p>' % e(t("by", "By zapps-ltd"))]
     if version:
         out.append('<p>%s</p>' % e(t("version", "Version {version}", version=version)))
@@ -94,12 +114,14 @@ def build_html(app, version, sections, credits, license_line="", t=_plain,
                 SUPPORT_EMAIL, e(t("email", "Email {email}", email=SUPPORT_EMAIL)),
                 HOME_PAGE, e(t("home", "Visit zapps.ltd"))),
             '</section>']
-    if credits or license_line:
+    if credits or license_line or ownership_line:
         out += ['<section>', '<h2>%s</h2>' % e(t("credits_heading", "Credits and licenses"))]
         if credits:
             out.append(_block(list(credits)))
         if license_line:
             out.append(_block(license_line))
+        if ownership_line:
+            out.append(_block(ownership_line))
         out.append('</section>')
     out += ['<footer><p>%s</p></footer>' % e(t(
         "copyright", "Copyright © 2026 ZAPPS SOFTWARE LTD.")), '</main>']
@@ -168,5 +190,10 @@ def show_about():
                       license_line=t("license",
                                      "{app} is free software under the GNU Affero General Public License, version 3 or later. This applies to the code of {app} only: every component listed above keeps its own license.",
                                      app="ZKeypass"),
-                      t=t, rtl=lang.is_rtl(), lang_code=lang.current_code())
+                      t=t, rtl=lang.is_rtl(), lang_code=lang.current_code(),
+                      mark=mark_image(os.path.join(paths.APP_DIR, "assets",
+                                                   "zapps-mark.svg")),
+                      ownership_line=t("ownership",
+                                       "The ZAPPS name, the ZAPPS Z logo and the {app} icon are owned by ZAPPS SOFTWARE LTD. Copyright 2026 ZAPPS SOFTWARE LTD, all rights reserved. They are not covered by this software's open-source licence and may not be used for other software or modified versions without written permission.",
+                                       app="ZKeypass"))
     return open_page(paths.TMP_DIR, page)

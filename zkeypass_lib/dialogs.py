@@ -16,6 +16,32 @@ from . import autotype_store, passkeys as passkeylib
 from . import lang
 
 
+EM_SETPASSWORDCHAR = 0x00CC
+EM_GETPASSWORDCHAR = 0x00D2
+
+
+def _win_password_char(field, char=None):
+    """Read (char None) or set a Windows edit box's password character.
+
+    Setting 0 makes Windows drop the ES_PASSWORD style, so screen readers
+    stop treating the box as protected; a nonzero character brings it back.
+    Returns the character read, or 0 when not on Windows."""
+    if wx.Platform != "__WXMSW__":
+        return 0
+    import ctypes
+    from ctypes import wintypes
+    user32 = ctypes.WinDLL("user32")
+    send = user32.SendMessageW
+    send.argtypes = [wintypes.HWND, wintypes.UINT, wintypes.WPARAM,
+                     wintypes.LPARAM]
+    send.restype = wintypes.LPARAM
+    handle = field.GetHandle()
+    if char is None:
+        return send(handle, EM_GETPASSWORDCHAR, 0, 0) or 0
+    send(handle, EM_SETPASSWORDCHAR, char, 0)
+    return char
+
+
 _SEQUENCE_PRESETS = (
     ("Username, Tab, Password, Enter", "{USERNAME}{TAB}{PASSWORD}{ENTER}"),
     ("Username, Tab, Password", "{USERNAME}{TAB}{PASSWORD}"),
@@ -847,6 +873,7 @@ class EntryDialog(wx.Dialog):
         password_row = wx.BoxSizer(wx.HORIZONTAL)
         self.password_field = wx.TextCtrl(page, style=wx.TE_PASSWORD)
         self.password_field.SetName(lang.t("dialogs", "password", "Password"))
+        self._mask_char = _win_password_char(self.password_field) or 0x25CF
         reveal = wx.CheckBox(page, label=lang.control_label(
             "show_password",
             "&Show password"))
@@ -931,11 +958,16 @@ class EntryDialog(wx.Dialog):
         self.title_field.SelectAll()
 
     def on_reveal(self, event):
-        style = self.password_field.GetWindowStyle()
-        new_style = (style & ~wx.TE_PASSWORD) if event.IsChecked() \
-            else (style | wx.TE_PASSWORD)
-        self.password_field.SetWindowStyle(new_style)
-        self.password_field.Refresh()
+        """Show or hide the password. The style flag alone leaves Windows'
+        edit box in password mode, so screen readers kept reading stars;
+        the password character is changed in Windows itself as well."""
+        show = event.IsChecked()
+        field = self.password_field
+        style = field.GetWindowStyle()
+        field.SetWindowStyle((style & ~wx.TE_PASSWORD) if show
+                             else (style | wx.TE_PASSWORD))
+        _win_password_char(field, 0 if show else self._mask_char)
+        field.Refresh()
 
     def on_generate(self, event):
         dialog = GeneratorDialog(self, parent_settings=None)

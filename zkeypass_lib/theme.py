@@ -129,6 +129,101 @@ class _Palette(getattr(wx, "DarkModeSettings", object)):
         return wx.Pen(BORDER)
 
 
+# ------------------------------------------------ check boxes, dark theme
+#
+# In dark mode wxWidgets 3.3 draws every check box itself, as an owner-drawn
+# push button, and Windows then reports a button with no checked state.
+# Every check box made while the dark theme is on gets an accessible object
+# that reports a check box and its state (all else comes from Windows), and
+# tells screen readers each time the state changes.
+
+class _CheckBoxAccessible(getattr(wx, "Accessible", object)):
+
+    def GetRole(self, child_id):
+        if child_id == 0:
+            return (wx.ACC_OK, wx.ROLE_SYSTEM_CHECKBUTTON)
+        return (wx.ACC_NOT_IMPLEMENTED, 0)
+
+    def GetState(self, child_id):
+        box = self.GetWindow()
+        if child_id != 0 or not box:
+            return (wx.ACC_NOT_IMPLEMENTED, 0)
+        state = 0
+        if box.IsEnabled():
+            state |= wx.ACC_STATE_SYSTEM_FOCUSABLE
+            focus = wx.Window.FindFocus()
+            if focus and focus.GetHandle() == box.GetHandle():
+                state |= wx.ACC_STATE_SYSTEM_FOCUSED
+        else:
+            state |= wx.ACC_STATE_SYSTEM_UNAVAILABLE
+        if not box.IsShownOnScreen():
+            state |= wx.ACC_STATE_SYSTEM_INVISIBLE
+        if box.Is3State() and box.Get3StateValue() == wx.CHK_UNDETERMINED:
+            state |= wx.ACC_STATE_SYSTEM_MIXED
+        elif box.GetValue():
+            state |= wx.ACC_STATE_SYSTEM_CHECKED
+        return (wx.ACC_OK, state)
+
+
+def _accessible_check_boxes():
+    """Make wx.CheckBox a subclass that carries _CheckBoxAccessible."""
+    if _state.get("check_boxes") or not hasattr(wx, "Accessible"):
+        return
+    _state["check_boxes"] = True
+    original = wx.CheckBox
+
+    class AccessibleCheckBox(original):
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self._zk_pending = False
+            try:
+                self.SetAccessible(_CheckBoxAccessible(self))
+            except Exception:
+                return
+            original.Bind(self, wx.EVT_CHECKBOX, self._zk_on_toggle)
+
+        def _zk_on_toggle(self, event):
+            self._zk_announce()
+            event.Skip()
+
+        def _zk_announce(self):
+            # Once per change, after every handler has run.
+            if not getattr(self, "_zk_pending", True):
+                self._zk_pending = True
+                wx.CallAfter(self._zk_notify)
+
+        def _zk_notify(self):
+            if not self:
+                return
+            self._zk_pending = False
+            try:
+                wx.Accessible.NotifyEvent(wx.ACC_EVENT_OBJECT_STATECHANGE,
+                                          self, wx.OBJID_CLIENT, 0)
+            except Exception:
+                pass
+
+        def Bind(self, event, handler, source=None, id=wx.ID_ANY,
+                 id2=wx.ID_ANY):
+            # A handler bound on the box itself runs before the one above
+            # and may not pass the event on; announce after it instead.
+            if event is wx.EVT_CHECKBOX and source in (None, self):
+                inner = handler
+
+                def handler(evt, inner=inner):
+                    try:
+                        return inner(evt)
+                    finally:
+                        self._zk_announce()
+            return original.Bind(self, event, handler, source, id, id2)
+
+        def SetValue(self, state):
+            original.SetValue(self, state)
+            self._zk_announce()
+
+    wx.CheckBox = AccessibleCheckBox
+
+
 def install(app, settings):
     """Turn the theme on for the whole program.  Call before any window exists."""
     global _dark_settings, _original_show_modal
@@ -141,6 +236,8 @@ def install(app, settings):
                 wx.App.DarkMode_Always, _dark_settings))
         except Exception:
             _state["dark"] = False
+    if _state["dark"]:
+        _accessible_check_boxes()
     if not _state["installed"]:
         _state["installed"] = True
         _original_show_modal = wx.Dialog.ShowModal

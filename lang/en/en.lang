@@ -302,6 +302,7 @@ about_page_credits_heading = Credits and licenses
 about_page_email = Email {email}
 about_page_home = Visit zapps.ltd
 about_page_license = {app} is free software under the GNU Affero General Public License, version 3 or later. This applies to the code of {app} only: every component listed above keeps its own license.
+about_page_ownership = The ZAPPS name, the ZAPPS Z logo and the {app} icon are owned by ZAPPS SOFTWARE LTD. Copyright 2026 ZAPPS SOFTWARE LTD, all rights reserved. They are not covered by this software's open-source licence and may not be used for other software or modified versions without written permission.
 about_page_team = zapps.ltd developers: {first} and {second}
 about_page_team_heading = Developers team
 about_page_this_copy_heading = This copy

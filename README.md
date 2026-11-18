@@ -181,6 +181,10 @@ ZKeypass is made by Harith and Mesar, the zapps.ltd developers, ZAPPS SOFTWARE L
 
 ZKeypass is free software, licensed under the GNU Affero General Public License, version 3 or (at your option) any later version (AGPL-3.0-or-later). The full text is in the file LICENSE. In short: you may use, study, change and share it, but every copy and every modified version, including one that other people use over a network, must stay under the same license, must come with its complete source code, and must keep the copyright notices and the credits below. Nobody can make a closed version of it. Copyright (C) 2026 ZAPPS SOFTWARE LTD.
 
+## Logo and icons
+
+The ZAPPS name, the ZAPPS Z logo and the ZKeypass icon are owned by ZAPPS SOFTWARE LTD. Copyright 2026 ZAPPS SOFTWARE LTD, all rights reserved. They are not covered by this software's open-source licence and may not be used for other software or modified versions without written permission.
+
 ## Third-party software and credits
 
 ZKeypass is built using:

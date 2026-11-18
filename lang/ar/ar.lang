@@ -873,6 +873,7 @@ about_page_this_copy_heading = هذه النسخة
 about_page_title = حول {app}
 about_page_version = الإصدار {version}
 about_page_license = {app} برنامج حر بموجب GNU Affero General Public License، الإصدار 3 أو أحدث. ينطبق هذا على شيفرة {app} فقط: يحتفظ كل مكوّن مذكور أعلاه بترخيصه الخاص.
+about_page_ownership = اسم ZAPPS وشعار ZAPPS Z وأيقونة {app} مملوكة لشركة ZAPPS SOFTWARE LTD. حقوق النشر 2026 ZAPPS SOFTWARE LTD، جميع الحقوق محفوظة. لا يشملها ترخيص المصدر المفتوح لهذا البرنامج، ولا يجوز استخدامها في برامج أخرى أو في نسخ معدّلة دون إذن كتابي.
 
 # Messages in message boxes, and errors.
 [errors]

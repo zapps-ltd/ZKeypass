@@ -873,6 +873,7 @@ about_page_this_copy_heading = Salinan ini
 about_page_title = Perihal {app}
 about_page_version = Versi {version}
 about_page_license = {app} ialah perisian bebas di bawah GNU Affero General Public License, versi 3 atau lebih baharu. Ini hanya terpakai pada kod {app}: setiap komponen yang disenaraikan di atas mengekalkan lesennya sendiri.
+about_page_ownership = Nama ZAPPS, logo Z ZAPPS dan ikon {app} dimiliki oleh ZAPPS SOFTWARE LTD. Hak cipta 2026 ZAPPS SOFTWARE LTD, semua hak terpelihara. Ia tidak diliputi oleh lesen sumber terbuka perisian ini dan tidak boleh digunakan untuk perisian lain atau versi yang diubah suai tanpa kebenaran bertulis.
 
 # Messages in message boxes, and errors.
 [errors]

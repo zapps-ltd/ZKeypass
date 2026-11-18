@@ -873,6 +873,7 @@ about_page_this_copy_heading = Эта копия
 about_page_title = О программе {app}
 about_page_version = Версия {version}
 about_page_license = {app} — свободное программное обеспечение под лицензией GNU Affero General Public License версии 3 или более поздней. Это относится только к коду {app}: каждый компонент из списка выше сохраняет собственную лицензию.
+about_page_ownership = Название ZAPPS, логотип ZAPPS Z и значок {app} принадлежат ZAPPS SOFTWARE LTD. Copyright 2026 ZAPPS SOFTWARE LTD, все права защищены. На них не распространяется открытая лицензия этого программного обеспечения, и без письменного разрешения их нельзя использовать в другом программном обеспечении или в изменённых версиях.
 
 # Messages in message boxes, and errors.
 [errors]
